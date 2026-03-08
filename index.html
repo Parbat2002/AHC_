@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>After Hours Cafe & Resto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── SHARED STYLES ── */
+:root {
+  --espresso: #1a0f08;
+  --roast: #3b1f0d;
+  --caramel: #c07d3e;
+  --cream: #f5ede0;
+  --latte: #d4a96a;
+  --fog: #f9f3ec;
+  --text: #2c1810;
+  --muted: #7a5c45;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Jost', sans-serif; background: var(--fog); color: var(--text); overflow-x: hidden; }
+
+/* ── NAV ── */
+nav {
+  height: 80px;
+  position: fixed;
+  top: 0; width: 100%; z-index: 100;
+  background: rgba(26, 15, 8, 0.95);
+  backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5vw;
+  border-bottom: 1px solid rgba(192, 125, 62, .25);
+}
+.logo-img {
+  width: 70px; height: 70px;
+  border-radius: 14px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+.nav-links { display: flex; gap: 2.2rem; list-style: none; }
+.nav-links a {
+  font-size: .88rem; font-weight: 500; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--cream);
+  text-decoration: none; opacity: .75;
+  transition: opacity .25s, color .25s; cursor: pointer;
+}
+.nav-links a:hover, .nav-links a.active { opacity: 1; color: var(--caramel); }
+.nav-cta {
+  font-size: .82rem; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--espresso);
+  background: #fff; padding: .55rem 1.4rem;
+  border-radius: 18px; text-decoration: none; cursor: pointer;
+  transition: background .25s, transform .25s;
+}
+.nav-cta:hover { background: var(--caramel); transform: translateY(-2px); }
+
+/* ── PAGE WRAPPER ── */
+.page-wrapper { min-height: 100vh; padding-top: 80px; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── BUTTONS ── */
+.btn-primary {
+  display: inline-block; padding: .85rem 2.2rem;
+  background: var(--caramel); color: var(--espresso);
+  font-size: .88rem; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; border-radius: 18px;
+  text-decoration: none; transition: transform .2s, background .2s;
+  border: none; cursor: pointer;
+}
+.btn-primary:hover { background: var(--latte); transform: translateY(-2px); }
+.btn-outline {
+  display: inline-block; padding: .85rem 2.2rem; margin-left: 1rem;
+  border: 1.5px solid rgba(192, 125, 62, .6); color: var(--latte);
+  font-size: .88rem; font-weight: 500; letter-spacing: .1em;
+  text-transform: uppercase; border-radius: 18px; text-decoration: none;
+  transition: border-color .2s, color .2s; cursor: pointer;
+}
+.btn-outline:hover { border-color: var(--caramel); color: var(--caramel); }
+
+/* ── SECTION COMMONS ── */
+section.section { padding: 6rem 8vw; }
+.section-label {
+  font-size: .78rem; letter-spacing: .2em;
+  text-transform: uppercase; color: var(--caramel); margin-bottom: .8rem;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  color: var(--text); line-height: 1.2; margin-bottom: 1rem;
+}
+.section-sub { color: var(--muted); max-width: 540px; line-height: 1.8; margin-bottom: 3rem; }
+
+/* ── FOOTER ── */
+footer { background: var(--espresso); padding: 3.5rem 8vw 2rem; border-top: 1px solid rgba(192, 125, 62, .2); }
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem; margin-bottom: 3rem;
+}
+.footer-brand p { font-size: .85rem; color: rgba(245,237,224,.45); line-height: 1.7; max-width: 240px; margin-top: .8rem; }
+.footer-col h4 { font-size: .78rem; letter-spacing: .18em; text-transform: uppercase; color: var(--caramel); margin-bottom: 1rem; }
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: .6rem; }
+.footer-col ul a, .footer-col ul span {
+  font-size: .88rem; color: rgba(245,237,224,.5);
+  text-decoration: none; transition: color .2s; cursor: pointer;
+}
+.footer-col ul a:hover { color: var(--latte); }
+.footer-bottom {
+  border-top: 1px solid rgba(192,125,62,.1); padding-top: 1.5rem;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-bottom p { font-size: .8rem; color: rgba(245,237,224,.3); }
+
+/* ═══════════════════════════════
+   HOME PAGE
+═══════════════════════════════ */
+.hero {
+  min-height: calc(100vh - 80px);
+  background-image: linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.75)), url("images/bg.jpg");
+  background-size: cover; background-position: center;
+  display: grid; grid-template-columns: 1fr 1fr;
+  align-items: center; padding: 6rem 8vw; gap: 4rem;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(192,125,62,.18) 0%, transparent 70%);
+}
+.hero-text { position: relative; z-index: 2; }
+.hero-eyebrow { font-size: .8rem; letter-spacing: .2em; text-transform: uppercase; color: var(--caramel); margin-bottom: 1.2rem; }
+.hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.8rem,5vw,4.5rem); line-height: 1.12; color: var(--cream); margin-bottom: 1.5rem; }
+.hero h1 em { font-style: italic; color: var(--latte); }
+.hero p { color: rgba(245,237,224,.65); font-size: 1.05rem; line-height: 1.75; max-width: 420px; margin-bottom: 2.5rem; }
+.hero-visual { position: relative; z-index: 2; display: flex; justify-content: center; align-items: center; }
+.coffee-circle {
+  width: 360px; height: 360px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #6b3a1f, #1a0f08);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 80px rgba(192,125,62,.3), inset 0 0 60px rgba(0,0,0,.4);
+  font-size: 9rem; animation: float 4s ease-in-out infinite; overflow: hidden;
+}
+.coffee-circle img { font-size: 9rem; }
+@keyframes float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-16px) } }
+
+.stats {
+  background: rgba(46,18,0,0.719); display: flex;
+  justify-content: space-around; padding: 2.5rem 8vw;
+  border-bottom: 1px solid rgba(192,125,62,.2);
+}
+.stat { text-align: center; }
+.stat-num { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--caramel); }
+.stat-lbl { font-size: .78rem; letter-spacing: .15em; text-transform: uppercase; color: rgba(245,237,224,.5); margin-top: .2rem; }
+
+.featured-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.5rem; }
+.feat-card { background: #fff; border-radius: 4px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,.06); transition: transform .3s, box-shadow .3s; }
+.feat-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,.12); }
+.feat-card-img { height: 200px; display: flex; align-items: center; justify-content: center; font-size: 5rem; overflow: hidden; }
+.feat-card-img.c1 { background: linear-gradient(135deg,#3b1f0d,#6b3a1f); }
+.feat-card-img.c2 { background: linear-gradient(135deg,#1a0f08,#3b1f0d); }
+.feat-card-img.c3 { background: linear-gradient(135deg,#4e2a10,#c07d3e33); }
+.fci { height: 200px; width: 100%; object-fit: cover; }
+.feat-card-body { padding: 1.4rem; }
+.feat-card-body h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; margin-bottom: .4rem; }
+.feat-card-body p { font-size: .88rem; color: var(--muted); line-height: 1.6; }
+.feat-card-price { display: inline-block; margin-top: .8rem; font-weight: 500; color: var(--caramel); }
+.wcu { object-fit: cover; width: 100%; height: 100%; }
+
+/* ═══════════════════════════════
+   PRODUCTS PAGE
+═══════════════════════════════ */
+.products-hero {
+  background: rgba(46,18,0,0.719); padding: 5rem 8vw;
+  text-align: center; min-height: 22vh; display: flex; flex-direction: column; justify-content: center;
+}
+.products-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem,4vw,3.5rem); color: var(--cream); margin-bottom: .5rem; }
+.products-hero p { color: rgba(245,237,224,.6); margin-top: .8rem; }
+.filter-bar { display: flex; gap: 1rem; padding: 2rem 8vw 0; flex-wrap: wrap; }
+.filter-btn {
+  padding: .5rem 1.3rem; border-radius: 18px;
+  border: 1.5px solid var(--caramel); background: transparent;
+  color: var(--caramel); font-family: 'Jost', sans-serif;
+  font-size: .82rem; letter-spacing: .08em; text-transform: uppercase;
+  cursor: pointer; transition: background .2s, color .2s;
+}
+.filter-btn:hover, .filter-btn.active { background: var(--caramel); color: var(--espresso); }
+.products-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+  gap: 1.5rem; padding: 2rem 8vw 6rem;
+}
+.product-card { background: #fff; border-radius: 4px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,.07); transition: transform .3s, box-shadow .3s; }
+.product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 36px rgba(0,0,0,.12); }
+.product-img { height: 180px; display: flex; align-items: center; justify-content: center; font-size: 4.5rem; overflow: hidden; }
+.product-img img { height: 192px; width: 100%; object-fit: cover; }
+.product-info { padding: 1.2rem; }
+.product-info h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; margin-bottom: .3rem; }
+.product-info p { font-size: .84rem; color: var(--muted); line-height: 1.55; margin-bottom: .8rem; }
+.product-footer { display: flex; justify-content: space-between; align-items: center; }
+.product-price { font-weight: 600; color: var(--caramel); }
+.add-btn {
+  background: var(--espresso); color: var(--cream); border: none;
+  padding: .4rem .9rem; font-size: .78rem; letter-spacing: .08em;
+  text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: background .2s;
+}
+.add-btn:hover { background: var(--caramel); color: var(--espresso); }
+
+/* ═══════════════════════════════
+   ABOUT PAGE
+═══════════════════════════════ */
+.about-hero {
+  min-height: 45vh; padding: 5rem 8vw;
+  background-image: linear-gradient(rgba(0,0,0,0.699), rgba(0,0,0,0.658)), url("images/for about top.jpeg");
+  background-size: cover; background-position: center; background-repeat: no-repeat;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.about-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem,4vw,3.5rem); color: var(--cream); max-width: 500px; }
+.about-hero p { color: rgba(245,237,224,.6); max-width: 480px; margin-top: 1rem; line-height: 1.8; }
+.about-story { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; padding: 6rem 8vw; align-items: center; }
+.story-visual {
+  height: 420px; background: linear-gradient(135deg,var(--roast),var(--espresso));
+  border-radius: 4px; display: flex; align-items: center; justify-content: center;
+  font-size: 10rem; box-shadow: 0 20px 60px rgba(0,0,0,.2); overflow: hidden;
+}
+.fyi { width: 100%; height: 100%; object-fit: cover; border-radius: 4px; }
+.about-text .section-title { margin-bottom: 1.2rem; }
+.about-text p { color: var(--text); line-height: 1.85; margin-bottom: 1rem; font-size: 1rem; }
+.values-section { background: rgba(46,18,0,0.719); padding: 5rem 8vw; }
+.values-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; margin-top: 3rem; }
+.value-card { border-left: 2px solid var(--caramel); padding: 0 0 0 1.5rem; }
+.value-icon { font-size: 2rem; margin-bottom: .8rem; }
+.value-card h3 { font-family: 'Playfair Display', serif; color: var(--cream); margin-bottom: .5rem; }
+.value-card p { font-size: .88rem; color: rgba(245,237,224,.55); line-height: 1.7; }
+.team-section { padding: 6rem 8vw; }
+.team-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 2rem; margin-top: 3rem; }
+.team-card { text-align: center; }
+.team-avatar {
+  width: 120px; height: 120px; border-radius: 50%; margin: 0 auto 1rem;
+  background: linear-gradient(135deg,var(--roast),var(--caramel));
+  display: flex; align-items: center; justify-content: center; font-size: 3rem;
+}
+.team-card h3 { font-family: 'Playfair Display', serif; margin-bottom: .25rem; }
+.team-card .role { font-size: .82rem; letter-spacing: .1em; text-transform: uppercase; color: var(--caramel); }
+.team-card p { font-size: .88rem; color: var(--muted); margin-top: .5rem; line-height: 1.6; }
+.tea-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); justify-items: center; margin: 5% 15% 0; }
+.tea { text-align: center; }
+.tea h3 { font-family: 'Playfair Display', serif; margin-bottom: .25rem; }
+.tea .role { font-size: .82rem; letter-spacing: .1em; text-transform: uppercase; color: var(--caramel); }
+.tea p { font-size: .88rem; color: var(--muted); margin-top: .5rem; line-height: 1.6; }
+
+/* ═══════════════════════════════
+   CONTACT PAGE
+═══════════════════════════════ */
+.contact-hero {
+  background: linear-gradient(135deg,var(--espresso),var(--roast));
+  padding: 5rem 8vw; min-height: 22vh; display: flex; flex-direction: column; justify-content: center;
+}
+.contact-hero h1 { font-family: 'Playfair Display', serif; font-size: 50px; color: var(--cream); margin-bottom: .5rem; }
+.contact-hero p { color: rgba(245,237,224,.6); margin-top: .8rem; max-width: 480px; line-height: 1.6; }
+.contact-body { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; padding: 5rem 8vw 0; }
+.contact-info h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 2rem; }
+.contact-item { display: flex; gap: 1rem; margin-bottom: 1.8rem; align-items: flex-start; border-radius: 18px; }
+.contact-icon { width: 44px; height: 44px; background: var(--caramel); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; overflow: hidden; }
+.g { width: 46px; height: 46px; border-radius: 5px; object-fit: cover; }
+.contact-details h4 { font-weight: 500; margin-bottom: .25rem; }
+.contact-details a { color: var(--caramel); text-decoration: none; font-size: .92rem; }
+.contact-details a:hover { text-decoration: underline; }
+.contact-details p { font-size: .92rem; color: var(--muted); }
+.contact-form-wrap h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 2rem; }
+.form-group { margin-bottom: 1.2rem; }
+.form-group label { display: block; font-size: .82rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: .5rem; }
+.form-group input, .form-group textarea, .form-group select {
+  width: 100%; padding: .85rem 1rem;
+  border: 1.5px solid rgba(192,125,62,.25); background: #fff;
+  border-radius: 2px; font-family: 'Jost', sans-serif;
+  font-size: .95rem; color: var(--text); outline: none; transition: border-color .25s;
+}
+.form-group input:focus, .form-group textarea:focus { border-color: var(--caramel); }
+.form-group textarea { resize: vertical; min-height: 130px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.map-wrap { padding: 0 8vw 6rem; margin-top: 4rem; }
+.map-wrap h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 1.5rem; }
+.map-frame { border-radius: 4px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,.12); border: 1px solid rgba(192,125,62,.2); }
+.map-frame iframe { width: 100%; height: 420px; border: none; display: block; }
+.view-map-btn {
+  margin-top: 1rem;
+  font-size: .82rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--espresso); background: #fff; padding: .55rem 1.4rem;
+  border-radius: 18px; border: none; cursor: pointer; transition: background .25s;
+}
+.view-map-btn:hover { background: var(--caramel); }
+
+/* ═══════════════════════════════
+   RESPONSIVE
+═══════════════════════════════ */
+@media(max-width:900px) {
+  .hero { grid-template-columns: 1fr; text-align: center; }
+  .hero p { max-width: 100%; }
+  .hero-visual { display: none; }
+  .featured-grid { grid-template-columns: 1fr 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .about-story { grid-template-columns: 1fr; }
+  .values-grid, .team-grid { grid-template-columns: 1fr 1fr; }
+  .contact-body { grid-template-columns: 1fr; }
+}
+@media(max-width:600px) {
+  .featured-grid { grid-template-columns: 1fr; }
+  .stats { flex-direction: column; gap: 1.5rem; }
+  .values-grid, .team-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  nav .nav-links { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <img src="images/logo.jpg" class="logo-img" onclick="showPage('home')" alt="After Hours Logo">
+  <ul class="nav-links">
+    <li><a onclick="showPage('home')" id="nav-home" class="active">Home</a></li>
+    <li><a onclick="showPage('products')" id="nav-products">Products</a></li>
+    <li><a onclick="showPage('about')" id="nav-about">About</a></li>
+    <li><a onclick="showPage('contact')" id="nav-contact">Contact</a></li>
+  </ul>
+  <a class="nav-cta" onclick="showPage('contact')">Visit Now</a>
+</nav>
+
+<!-- ═══════════════════════════
+     HOME PAGE
+════════════════════════════ -->
+<div id="page-home" class="page active">
+<div class="page-wrapper">
+
+  <div class="hero">
+    <div class="hero-text">
+      <p class="hero-eyebrow">☕ Est. 2025 · Specialty Coffee</p>
+      <h1>After Hours, Before<em> Memories.</em></h1>
+      <p>Sourced from the world's finest estates. Roasted in-house every morning. Served with the craft and care your day deserves.</p>
+      <a class="btn-primary" onclick="showPage('products')">Explore Menu</a>
+      <a class="btn-outline" onclick="showPage('about')">Our Story</a>
+    </div>
+    <div class="hero-visual">
+      <div class="coffee-circle"><img src="images/c1.PNG" alt="Coffee"></div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num">3+</div><div class="stat-lbl">Origins</div></div>
+    <div class="stat"><div class="stat-num">2K</div><div class="stat-lbl">Happy Customers</div></div>
+    <div class="stat"><div class="stat-num">1</div><div class="stat-lbl">Years Roasting</div></div>
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-lbl">Ethically Sourced</div></div>
+  </div>
+
+  <section class="section">
+    <p class="section-label">Signature Drinks</p>
+    <h2 class="section-title">Our Most Loved Cups</h2>
+    <p class="section-sub">From velvety espresso classics to seasonal house specials — every drink is crafted to perfection.</p>
+    <div class="featured-grid">
+      <div class="feat-card">
+        <div class="feat-card-img c1"><img src="images/flatwhite.jpg" class="fci" alt="Flat White"></div>
+        <div class="feat-card-body">
+          <h3>Signature Flat White</h3>
+          <p>Double ristretto with silky micro-foam steamed milk and a hint of vanilla bean.</p>
+          <span class="feat-card-price">Nrs. 550</span>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-card-img c2"><img src="images/green tea.jpg" class="fci" alt="Green Tea"></div>
+        <div class="feat-card-body">
+          <h3>Green Tea</h3>
+          <p>Hot ceremonial green tea with raw honey.</p>
+          <span class="feat-card-price">Nrs. 75</span>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-card-img c3"><img src="images/matcha.jpg" class="fci" alt="Latte"></div>
+        <div class="feat-card-body">
+          <h3>Latte</h3>
+          <p>Ceremonial grade oat milk foam and a kiss of raw honey.</p>
+          <span class="feat-card-price">Nrs. 575</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background:rgba(46,18,0,0.719);margin-top:0;padding-top:4rem;padding-bottom:4rem;">
+    <p class="section-label" style="color:var(--caramel)">Why Choose Us</p>
+    <h2 class="section-title" style="color:var(--cream)">The After Hours Difference</h2>
+    <div class="featured-grid" style="margin-top:2rem;">
+      <div style="text-align:center;padding:2rem;border:1px solid rgba(192,125,62,.2);border-radius:4px;overflow:hidden;">
+        <div style="font-size:2.5rem;margin-bottom:1rem;height:200px;overflow:hidden;"><img src="images/coffee picking.jpg" class="fci" alt="Farm to Cup"></div>
+        <h3 style="font-family:'Playfair Display',serif;color:var(--cream);margin-bottom:.5rem;">Farm to Cup</h3>
+        <p style="color:rgba(245,237,224,.5);font-size:.9rem;line-height:1.7;">Direct relationships with farmers in Gulmi, Palpa, Syangja.</p>
+      </div>
+      <div style="text-align:center;padding:2rem;border:1px solid rgba(192,125,62,.2);border-radius:4px;overflow:hidden;">
+        <div style="font-size:2.5rem;margin-bottom:1rem;height:200px;overflow:hidden;"><img src="images/coffee roasting.jpg" class="fci" alt="Daily Roasts"></div>
+        <h3 style="font-family:'Playfair Display',serif;color:var(--cream);margin-bottom:.5rem;">Daily Roasts</h3>
+        <p style="color:rgba(245,237,224,.5);font-size:.9rem;line-height:1.7;">We roast every morning so you always get the freshest cup possible.</p>
+      </div>
+      <div style="text-align:center;padding:2rem;border:1px solid rgba(192,125,62,.2);border-radius:4px;overflow:hidden;">
+        <div style="font-size:2.5rem;margin-bottom:1rem;height:200px;overflow:hidden;"><img src="images/hQ.png" class="fci" alt="High Quality"></div>
+        <h3 style="font-family:'Playfair Display',serif;color:var(--cream);margin-bottom:.5rem;">High Quality</h3>
+        <p style="color:rgba(245,237,224,.5);font-size:.9rem;line-height:1.7;">We source only the finest beans and use the best brewing methods.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="images/logo.jpg" class="logo-img" onclick="showPage('home')" alt="Logo" style="cursor:pointer;">
+      <p>Specialty coffee roasted with care and served with love since 2025. Every cup is a story worth telling.</p>
+    </div>
+    <div class="footer-col"><h4>Navigate</h4><ul>
+      <li><a onclick="showPage('home')">Home</a></li>
+      <li><a onclick="showPage('products')">Menu</a></li>
+      <li><a onclick="showPage('about')">About</a></li>
+      <li><a onclick="showPage('contact')">Contact</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Connect</h4><ul><li><a href="#">Instagram</a></li></ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul>
+      <li><a href="/cdn-cgi/l/email-protection#81efe8f5e4f2e9ebe9e0b4b5b6c1e6ece0e8edafe2eeec"><span class="__cf_email__" data-cfemail="127c7b6677617a787a7327262552757f737b7e3c717d7f">[email&#160;protected]</span></a></li>
+      <li><span>+977 9867898711</span></li>
+      <li><span>Bhairahawa, Siddharthanagar, Rupandehi</span></li>
+    </ul></div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 After Hours. All rights reserved.</p>
+    <p>Crafted with ☕ in Bhairahawa.</p>
+  </div>
+</footer>
+</div>
+
+<!-- ═══════════════════════════
+     PRODUCTS PAGE
+════════════════════════════ -->
+<div id="page-products" class="page">
+<div class="page-wrapper">
+
+  <div class="products-hero">
+    <h1>Our Full Menu</h1>
+    <p>Hand-crafted drinks, freshly baked goods &amp; premium whole beans</p>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterProducts('all',this)">All</button>
+    <button class="filter-btn" onclick="filterProducts('espresso',this)">Espresso</button>
+    <button class="filter-btn" onclick="filterProducts('cold',this)">Cold Drinks</button>
+    <button class="filter-btn" onclick="filterProducts('tea',this)">Tea &amp; More</button>
+    <button class="filter-btn" onclick="filterProducts('food',this)">Food</button>
+    <button class="filter-btn" onclick="filterProducts('beans',this)">Beans</button>
+  </div>
+
+  <div class="products-grid" id="products-grid">
+    <div class="product-card" data-cat="espresso">
+      <div class="product-img" style="background:linear-gradient(135deg,#3b1f0d,#1a0f08)"><img src="images/double expresso.jpg" alt="Double Espresso"></div>
+      <div class="product-info"><h3>Double Espresso</h3><p>Two pulls of our house blend. Bold, balanced, beautiful.</p><div class="product-footer"><span class="product-price">Nrs. 400</span></div></div>
+    </div>
+    <div class="product-card" data-cat="espresso">
+      <div class="product-img" style="background:linear-gradient(135deg,#4e2a10,#3b1f0d)"><img src="images/flatwhite.jpg" alt="Flat White"></div>
+      <div class="product-info"><h3>Flat White</h3><p>Double ristretto with silky micro-foam, our most-loved classic.</p><div class="product-footer"><span class="product-price">Nrs. 550</span></div></div>
+    </div>
+    <div class="product-card" data-cat="espresso">
+      <div class="product-img" style="background:linear-gradient(135deg,#6b3a1f,#4e2a10)"><img src="images/oat milk latte.jpg" alt="Oat Milk Latte"></div>
+      <div class="product-info"><h3>Oat Milk Latte</h3><p>Rich espresso with creamy oat milk — naturally sweet and smooth.</p><div class="product-footer"><span class="product-price">Nrs. 575</span></div></div>
+    </div>
+    <div class="product-card" data-cat="espresso">
+      <div class="product-img" style="background:linear-gradient(135deg,#3b1f0d,#6b3a1f)"><img src="images/Turmeric.jpg" alt="Turmeric Cappuccino"></div>
+      <div class="product-info"><h3>Turmeric Cappuccino</h3><p>Golden spiced espresso with velvety foam. Our seasonal special.</p><div class="product-footer"><span class="product-price">Nrs. 600</span></div></div>
+    </div>
+    <div class="product-card" data-cat="cold">
+      <div class="product-img" style="background:linear-gradient(135deg,#1a0f08,#3b1f0d)"><img src="images/cbr.jpg" alt="Cold Brew"></div>
+      <div class="product-info"><h3>Cold Brew Reserve</h3><p>18-hour steeped Ethiopian beans over ice. Naturally sweet, zero bitterness.</p><div class="product-footer"><span class="product-price">Nrs. 600</span></div></div>
+    </div>
+    <div class="product-card" data-cat="cold">
+      <div class="product-img" style="background:linear-gradient(135deg,#2c4a2e,#1a0f08)"><img src="images/matcha.jpg" alt="Matcha Latte"></div>
+      <div class="product-info"><h3>Matcha Latte</h3><p>Ceremonial oat milk over ice. Vibrant and refreshing.</p><div class="product-footer"><span class="product-price">Nrs. 575</span></div></div>
+    </div>
+    <div class="product-card" data-cat="cold">
+      <div class="product-img" style="background:linear-gradient(135deg,#3b1f0d,#c07d3e44)"><img src="images/iced americano.jpg" alt="Iced Americano"></div>
+      <div class="product-info"><h3>Iced Americano</h3><p>Espresso pulled over pure ice. Clean, crisp, classic.</p><div class="product-footer"><span class="product-price">Nrs. 450</span></div></div>
+    </div>
+    <div class="product-card" data-cat="tea">
+      <div class="product-img" style="background:linear-gradient(135deg,#2c4a2e,#1a3a1a)"><img src="images/green tea.jpg" alt="Green Tea"></div>
+      <div class="product-info"><h3>Green Tea</h3><p>Hot ceremonial green tea with raw honey.</p><div class="product-footer"><span class="product-price">Nrs. 75</span></div></div>
+    </div>
+    <div class="product-card" data-cat="tea">
+      <div class="product-img" style="background:linear-gradient(135deg,#4a2c10,#c07d3e44)"><img src="images/masala chai.jpg" alt="Masala Chai"></div>
+      <div class="product-info"><h3>Masala Chai</h3><p>House-blended spice mix steeped in whole milk. Warming and aromatic.</p><div class="product-footer"><span class="product-price">Nrs. 50</span></div></div>
+    </div>
+    <div class="product-card" data-cat="food">
+      <div class="product-img" style="background:linear-gradient(135deg,#6b3a1f,#c07d3e66)"><img src="images/butter.jpg" alt="Butter Croissant"></div>
+      <div class="product-info"><h3>Butter Croissant</h3><p>Baked fresh each morning. Flaky, buttery perfection.</p><div class="product-footer"><span class="product-price">Nrs. 350</span></div></div>
+    </div>
+    <div class="product-card" data-cat="food">
+      <div class="product-img" style="background:linear-gradient(135deg,#3b2a10,#6b3a1f)"><img src="images/dark choc.jpg" alt="Dark Choc Brownie"></div>
+      <div class="product-info"><h3>Dark Choc Brownie</h3><p>Rich, fudgy brownie made with our spent espresso grounds.</p><div class="product-footer"><span class="product-price">Nrs. 400</span></div></div>
+    </div>
+    <div class="product-card" data-cat="beans">
+      <div class="product-img" style="background:linear-gradient(135deg,#1a0f08,#4e2a10)"><img src="images/coffee beans.jpg" alt="House Blend Beans"></div>
+      <div class="product-info"><h3>House Blend Beans 250g</h3><p>Our signature medium-dark roast. Chocolate, hazelnut, dried cherry.</p><div class="product-footer"><span class="product-price">Nrs. 1800</span></div></div>
+    </div>
+  </div>
+
+</div>
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="images/logo.jpg" class="logo-img" onclick="showPage('home')" alt="Logo" style="cursor:pointer;">
+      <p>Specialty coffee roasted with care and served with love since 2025. Every cup is a story worth telling.</p>
+    </div>
+    <div class="footer-col"><h4>Navigate</h4><ul>
+      <li><a onclick="showPage('home')">Home</a></li>
+      <li><a onclick="showPage('products')">Menu</a></li>
+      <li><a onclick="showPage('about')">About</a></li>
+      <li><a onclick="showPage('contact')">Contact</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Connect</h4><ul><li><a href="#">Instagram</a></li></ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul>
+      <li><a href="/cdn-cgi/l/email-protection#9ef0f7eafbedf6f4f6ffabaaa9def9f3fff7f2b0fdf1f3"><span class="__cf_email__" data-cfemail="36585f4253455e5c5e5703020176515b575f5a1855595b">[email&#160;protected]</span></a></li>
+      <li><span>+977 9867898711</span></li>
+      <li><span>Bhairahawa, Siddharthanagar, Rupandehi</span></li>
+    </ul></div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 After Hours. All rights reserved.</p>
+    <p>Crafted with ☕ in Bhairahawa.</p>
+  </div>
+</footer>
+</div>
+
+<!-- ═══════════════════════════
+     ABOUT PAGE
+════════════════════════════ -->
+<div id="page-about" class="page">
+<div class="page-wrapper">
+
+  <div class="about-hero">
+    <h1>Rooted in Craft,<br>Driven by Passion</h1>
+    <p>From a small garage roaster in 2025 to your favorite neighborhood café — here's how we got here.</p>
+  </div>
+
+  <div class="about-story">
+    <div class="story-visual"><img src="images/hamro.png" class="fyi" alt="Our Story"></div>
+    <div class="about-text">
+      <p class="section-label">Our Story</p>
+      <h2 class="section-title">From Garage to Café</h2>
+      <p>It started with a beat-up vintage roaster, two obsessive coffee lovers, and a garage in Bhairahawa later joining with three more visionaries. We spent a year sourcing, failing, and perfecting before we opened our doors to the public in 2025.</p>
+      <p>Today, After Hours Cafe and Resto is a community hub — a place where laptops meet lattes, where first dates happen over flat whites, and where regulars know their baristas by name.</p>
+      <p>Every single bean we use is sourced through direct-trade partnerships with smallholder farms we visit personally. When you drink our coffee, you're tasting a relationship.</p>
+      <a class="btn-primary" onclick="showPage('products')">See Our Menu</a>
+    </div>
+  </div>
+
+  <div class="values-section">
+    <p class="section-label" style="color:var(--caramel)">What We Stand For</p>
+    <h2 class="section-title" style="color:var(--cream)">Our Values</h2>
+    <div class="values-grid">
+      <div class="value-card"><div class="value-icon">🌱</div><h3>Sustainability</h3><p>Compostable packaging, carbon-neutral delivery, and zero food waste through our bakery rescue program.</p></div>
+      <div class="value-card"><div class="value-icon">🤝</div><h3>Community</h3><p>We reinvest 5% of profits into local youth barista training programs every year.</p></div>
+      <div class="value-card"><div class="value-icon">🏅</div><h3>Quality</h3><p>We cup over 200 samples per year and only select beans that score 85+ on the SCA scale.</p></div>
+    </div>
+  </div>
+
+  <div class="team-section">
+    <p class="section-label">The People</p>
+    <h2 class="section-title">Meet Our Team</h2>
+    <div class="team-grid">
+      <div class="team-card"><div class="team-avatar">👩‍💼</div><h3>Dipikshya Aryal</h3><p class="role">Growth Director</p><p>"Turning Coffee into Community, and Community into Connection."</p></div>
+      <div class="team-card"><div class="team-avatar">👩‍💼</div><h3>Diya Bhattarai</h3><p class="role">Creative Director</p><p>"Designing Experiences Beyond the Cup."</p></div>
+      <div class="team-card"><div class="team-avatar">👩‍💼</div><h3>Saanjh Thapa</h3><p class="role">Marketing Director</p><p>"Spreading the Aroma Beyond The Cafe."</p></div>
+    </div>
+    <div class="tea-grid">
+      <div class="tea"><div class="team-avatar">👨‍💻</div><h3>Nitesh Jha</h3><p class="role">Co-Founder & Website Developer</p><p>"Building Digital Spaces as Warm as Our latte."</p></div>
+      <div class="tea"><div class="team-avatar">🤵</div><h3>Aadarsh Raj Regmi</h3><p class="role">Co-Founder & Asset Manager</p><p>"Managing Value, Maximizing Vision."</p></div>
+    </div>
+  </div>
+
+</div>
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="images/logo.jpg" class="logo-img" onclick="showPage('home')" alt="Logo" style="cursor:pointer;">
+      <p>Specialty coffee roasted with care and served with love since 2025. Every cup is a story worth telling.</p>
+    </div>
+    <div class="footer-col"><h4>Navigate</h4><ul>
+      <li><a onclick="showPage('home')">Home</a></li>
+      <li><a onclick="showPage('products')">Menu</a></li>
+      <li><a onclick="showPage('about')">About</a></li>
+      <li><a onclick="showPage('contact')">Contact</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Connect</h4><ul><li><a href="#">Instagram</a></li></ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul>
+      <li><a href="/cdn-cgi/l/email-protection#56383f2233253e3c3e3763626116313b373f3a7835393b"><span class="__cf_email__" data-cfemail="e38d8a9786908b898b82d6d7d4a3848e828a8fcd808c8e">[email&#160;protected]</span></a></li>
+      <li><span>+977 9867898711</span></li>
+      <li><span>Bhairahawa, Siddharthanagar, Rupandehi</span></li>
+    </ul></div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 After Hours. All rights reserved.</p>
+    <p>Crafted with ☕ in Bhairahawa.</p>
+  </div>
+</footer>
+</div>
+
+<!-- ═══════════════════════════
+     CONTACT PAGE
+════════════════════════════ -->
+<div id="page-contact" class="page">
+<div class="page-wrapper">
+
+  <div class="contact-hero">
+    <h1>Come Find Us</h1>
+    <p>Whether you want to ask about our beans, book an event, or just say hello — we'd love to hear from you.</p>
+    <button class="view-map-btn" onclick="document.getElementById('map-section').scrollIntoView({behavior:'smooth'})">View Map</button>
+  </div>
+
+  <div class="contact-body">
+    <div class="contact-info">
+      <h2>Get In Touch</h2>
+      <div class="contact-item">
+        <div class="contact-icon"><img src="images/gmail.png" class="g" alt="Email"></div>
+        <div class="contact-details"><h4>Email Us</h4><a href="/cdn-cgi/l/email-protection#82ecebf6e7f1eae8eae3b7b6b5c2e5efe3ebeeace1edef"><span class="__cf_email__" data-cfemail="46282f3223352e2c2e2773727106212b272f2a6825292b">[email&#160;protected]</span></a><p style="margin-top:.2rem">We reply within 24 hours</p></div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon"><img src="images/phone.jpg" class="g" alt="Phone"></div>
+        <div class="contact-details"><h4>Call Us</h4><p>+977 9867898711</p><p style="margin-top:.2rem">Mon–Sat 7am–6pm</p></div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon"><img src="images/location.png" class="g" alt="Location"></div>
+        <div class="contact-details"><h4>Visit Us</h4><p>Siddharthanagar, Bhairahawa,<br>Rupandehi</p></div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon"><img src="images/open.png" class="g" alt="Hours"></div>
+        <div class="contact-details"><h4>Opening Hours</h4><p>Mon–Fri: 7:00am – 5:30pm<br>Sat: 7:30am – 4:00pm<br>Sun: 8:00am – 3:00pm</p></div>
+      </div>
+    </div>
+
+    <div class="contact-form-wrap">
+      <h2>Send a Message</h2>
+      <form onsubmit="handleFormSubmit(event)">
+        <div class="form-row">
+          <div class="form-group"><label>First Name</label><input type="text" placeholder="Nitesh" required></div>
+          <div class="form-group"><label>Last Name</label><input type="text" placeholder="Jha" required></div>
+        </div>
+        <div class="form-group"><label>Email Address</label><input type="email" placeholder="afterhours@example.com" required></div>
+        <div class="form-group"><label>Phone (optional)</label><input type="tel" placeholder="+977 9867898711"></div>
+        <div class="form-group"><label>Subject</label>
+          <select>
+            <option>General Enquiry</option>
+            <option>Wholesale / Trade</option>
+            <option>Event Booking</option>
+            <option>Media & Press</option>
+            <option>Feedback</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Message</label><textarea placeholder="Tell us what's on your mind…" required></textarea></div>
+        <button type="submit" class="btn-primary" style="width:100%;text-align:center;padding:1rem;">Send Message</button>
+        <div id="form-success" style="display:none;margin-top:1rem;padding:1rem;background:#e8f5e9;border-radius:2px;color:#2e7d32;font-size:.9rem;">
+          ✅ Message sent! We'll be in touch within 24 hours.
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <section id="map-section">
+    <div class="map-wrap">
+      <h2>Find Us on the Map</h2>
+      <div class="map-frame">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.0!2d83.4561307!3d27.5060573!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3996a13fd7ca84d9%3A0x0!2sBhairahawa%2C%20Nepal!5e0!3m2!1sen!2snp!4v1!5m2!1sen!2snp"
+          allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          title="After Hours Cafe and Resto Location">
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+</div>
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="images/logo.jpg" class="logo-img" onclick="showPage('home')" alt="Logo" style="cursor:pointer;">
+      <p>Specialty coffee roasted with care and served with love since 2025. Every cup is a story worth telling.</p>
+    </div>
+    <div class="footer-col"><h4>Navigate</h4><ul>
+      <li><a onclick="showPage('home')">Home</a></li>
+      <li><a onclick="showPage('products')">Menu</a></li>
+      <li><a onclick="showPage('about')">About</a></li>
+      <li><a onclick="showPage('contact')">Contact</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Connect</h4><ul><li><a href="#">Instagram</a></li></ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul>
+      <li><a href="/cdn-cgi/l/email-protection#5f31362b3a2c3735373e6a6b681f38323e3633713c3032"><span class="__cf_email__" data-cfemail="147a7d6071677c7e7c75212023547379757d783a777b79">[email&#160;protected]</span></a></li>
+      <li><span>+977 9867898711</span></li>
+      <li><span>Bhairahawa, Siddharthanagar, Rupandehi</span></li>
+    </ul></div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 After Hours. All rights reserved.</p>
+    <p>Crafted with ☕ in Bhairahawa.</p>
+  </div>
+</footer>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+function showPage(name) {
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  // Show target
+  document.getElementById('
